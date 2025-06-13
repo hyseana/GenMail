@@ -14,7 +14,7 @@ A web application that generates professional emails using AI, allowing users to
 
 - Frontend: React + Tailwind CSS
 - Backend: Node.js + Express
-- AI: OpenAI GPT-4
+- AI: Ollama 3
 - Deployment: Frontend (Vercel), Backend (Render)
 
 ## Project Structure
