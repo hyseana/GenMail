@@ -15,13 +15,13 @@ function EmailForm({ onSubmit, isLoading }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
           Tipo di Email
         </label>
         <select
           value={type}
           onChange={(e) => setType(e.target.value)}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-900 dark:text-white"
           disabled={isLoading}
         >
           <option value="leave">Richiesta di Ferie</option>
@@ -33,13 +33,13 @@ function EmailForm({ onSubmit, isLoading }) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
           Tono
         </label>
         <select
           value={tone}
           onChange={(e) => setTone(e.target.value)}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-900 dark:text-white"
           disabled={isLoading}
         >
           <option value="formal">Formale</option>
@@ -50,14 +50,14 @@ function EmailForm({ onSubmit, isLoading }) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
           Contenuto
         </label>
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
           rows={4}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-900 dark:text-white"
           placeholder="Inserisci i punti principali da includere nell'email..."
           disabled={isLoading}
         />

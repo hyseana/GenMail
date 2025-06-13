@@ -18,38 +18,88 @@ app.use(express.json())
 // Email generation endpoint
 app.post('/api/generate-email', async (req, res) => {
   try {
-    const { type, tone, content, sessionId } = req.body
+    const { type, tone, content, sessionId, language } = req.body
 
-    // Map email types to Italian descriptions
+    // Map email types and tones for each language
     const emailTypeMap = {
-      leave: 'richiesta di ferie',
-      complaint: 'reclamo',
-      followup: 'follow-up',
-      thank: 'ringraziamento',
-      other: 'generica',
+      it: {
+        leave: 'richiesta di ferie',
+        complaint: 'reclamo',
+        followup: 'follow-up',
+        thank: 'ringraziamento',
+        other: 'generica',
+      },
+      en: {
+        leave: 'leave request',
+        complaint: 'complaint',
+        followup: 'follow-up',
+        thank: 'thank you',
+        other: 'generic',
+      },
+      es: {
+        leave: 'solicitud de vacaciones',
+        complaint: 'queja',
+        followup: 'seguimiento',
+        thank: 'agradecimiento',
+        other: 'genérica',
+      },
     }
 
-    // Map tones to Italian descriptions
     const toneMap = {
-      formal: 'formale',
-      friendly: 'amichevole',
-      assertive: 'assertivo',
-      professional: 'professionale',
+      it: {
+        formal: 'formale',
+        friendly: 'amichevole',
+        assertive: 'assertivo',
+        professional: 'professionale',
+      },
+      en: {
+        formal: 'formal',
+        friendly: 'friendly',
+        assertive: 'assertive',
+        professional: 'professional',
+      },
+      es: {
+        formal: 'formal',
+        friendly: 'amistoso',
+        assertive: 'asertivo',
+        professional: 'profesional',
+      },
     }
 
-    const prompt = `Scrivi un'email ${emailTypeMap[type]} in italiano con un tono ${toneMap[tone]}. 
-    ${content ? `Considera i seguenti punti:\n${content}` : ''}
-    
-    L'email deve essere professionale, chiara e concisa. Includi un oggetto appropriato.`
+    const systemMessages = {
+      it: "Sei un assistente esperto nella scrittura di email professionali in italiano.",
+      en: "You are an expert assistant in writing professional emails in English.",
+      es: "Eres un asistente experto en la redacción de correos electrónicos profesionales en español.",
+    }
+
+    const promptTemplates = {
+      it: `Scrivi un'email {type} in italiano con un tono {tone}.
+{content}
+L'email deve essere professionale, chiara e concisa. Includi un oggetto appropriato.`,
+      en: `Write a {type} email in English with a {tone} tone.
+{content}
+The email must be professional, clear, and concise. Include an appropriate subject line.`,
+      es: `Escribe un correo electrónico {type} en español con un tono {tone}.
+{content}
+El correo debe ser profesional, claro y conciso. Incluye un asunto apropiado.`,
+    }
+
+    const lang = language || 'it'
+    const typeText = emailTypeMap[lang]?.[type] || type
+    const toneText = toneMap[lang]?.[tone] || tone
+    const contentText = content ? (lang === 'it' ? `Considera i seguenti punti:\n${content}` : lang === 'en' ? `Consider the following points:\n${content}` : `Considera los siguientes puntos:\n${content}`) : ''
+    const prompt = promptTemplates[lang]
+      .replace('{type}', typeText)
+      .replace('{tone}', toneText)
+      .replace('{content}', contentText)
 
     // Get chat history for this session
     const history = chatHistory.get(sessionId) || []
-    
     // Create messages array with history
     const messages = [
       {
         role: "system",
-        content: "Sei un assistente esperto nella scrittura di email professionali in italiano."
+        content: systemMessages[lang] || systemMessages['it']
       },
       ...history,
       {
